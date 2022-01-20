@@ -1,66 +1,205 @@
 <template>
   <section class="container">
-    <div class="drag-calendar" style="display: block; background-color: 'transparent'" :style="{height: years ? '12.6rem' : '9.6rem'}">
+    <div
+      class="drag-calendar"
+      style="display: block; background-color: 'transparent'"
+      :style="{height: years ? '12.6rem' : '9.6rem'}"
+    >
       <div v-if="years" :class="yearly.maxOffset < 0 ? 'wrapper' : 'wrapper-flex'">
-        <div ref="yearly" state="yearly" class="years ui-draggable" style="left: 0px;" @mousedown="initDrag($event, yearly)" @touchstart="initDrag($event, yearly)" :style="yearly.phase === 'dragging' ? {pointerEvents: 'none', transition: 'none', cursor:'-webkit-grab'} : {} ">
-          <div v-for="year in calendar.years" :key="year" class="year-cell cell" @click="toggleSelectYear($event, year)" :year-id="year" :selected="isSelected(null,null,year)">
-            <div class="cell-content" :style="{backgroundColor: `${isSelected(null, null, year) ? accentColor : ''}` }">
-              <span class="year">{{year}}</span>
+        <div
+          ref="yearly"
+          state="yearly"
+          class="years ui-draggable"
+          style="left: 0px"
+          @mousedown="initDrag($event, yearly)"
+          @touchstart="initDrag($event, yearly)"
+          :style="
+            yearly.phase === 'dragging' ? {pointerEvents: 'none', transition: 'none', cursor: '-webkit-grab'} : {}
+          "
+        >
+          <div
+            v-for="year in calendar.years"
+            :key="year"
+            class="year-cell cell"
+            @click="toggleSelectYear($event, year)"
+            :year-id="year"
+            :selected="isSelected(null, null, year)"
+          >
+            <div class="cell-content" :style="{backgroundColor: `${isSelected(null, null, year) ? accentColor : ''}`}">
+              <span class="year">{{ year }}</span>
             </div>
           </div>
         </div>
       </div>
-      <div v-if="years" class="arrow top left" @click="goTo($event, yearly, -1)" :style="{visibility: yearly.realOffset >= 0 ? 'hidden' : 'visible'}">
-      </div>
-      <div v-if="years" class="arrow top right" @click="goTo($event, yearly, 1)" :style="{visibility: yearly.realOffset <= yearly.maxOffset ? 'hidden' : 'visible'}">
-      </div>
+      <div
+        v-if="years"
+        class="arrow top left"
+        @click="goTo($event, yearly, -1)"
+        :style="{visibility: yearly.realOffset >= 0 ? 'hidden' : 'visible'}"
+      ></div>
+      <div
+        v-if="years"
+        class="arrow top right"
+        @click="goTo($event, yearly, 1)"
+        :style="{visibility: yearly.realOffset <= yearly.maxOffset ? 'hidden' : 'visible'}"
+      ></div>
       <div :class="monthly.maxOffset < 0 ? 'wrapper' : 'wrapper-flex'">
-        <div ref="monthly" state="monthly" class="months ui-draggable" style="left: 0px;" @mousedown="initDrag($event, monthly)" @touchstart="initDrag($event, monthly)" :style="monthly.phase === 'dragging' ? {pointerEvents: 'none', transition: 'none', cursor:'-webkit-grab'} : {} ">
-          <div v-for="month in calendar.months" :key="`${month.fullYear}-${month.monthNumber}`" v-if="month" class="month-cell cell" :class="{prev: month.prev, next: month.next, past: month.past}" @click="toggleSelectMonth($event, month)" :month-id="`${month.fullYear}-${month.monthNumber}`" :year-id="month.fullYear" :selected="isSelected(null, month, null)">
-            <div class="cell-content" :selected="selectedDate.monthNumber == month.monthNumber && selectedDate.fullYear == month.fullYear" :style="{backgroundColor: `${isSelected(null, month, null) || (selectedDate.monthNumber == month.monthNumber && selectedDate.fullYear == month.fullYear) ? accentColor : ''}` }" @click.stop="scrollDayIntoView()">
-              <span class="cell-content month-name">{{MONTHS[month.monthNumber] | abr}} </span>
-              <div class="hover" v-if="month.next"> {{month.fullYear}}</div>
-              <div class="hover" v-if="month.prev"> {{month.fullYear}}</div>
-              <span v-if="!years"> {{month.fullYear%1000}}</span>
+        <div
+          ref="monthly"
+          state="monthly"
+          class="months ui-draggable"
+          style="left: 0px"
+          @mousedown="initDrag($event, monthly)"
+          @touchstart="initDrag($event, monthly)"
+          :style="
+            monthly.phase === 'dragging' ? {pointerEvents: 'none', transition: 'none', cursor: '-webkit-grab'} : {}
+          "
+        >
+
+          <div v-if="allMonthShow" >
+            <div
+              v-for="month in calendar.months"
+              :key="`${month.fullYear}-${month.monthNumber}`"
+              v-if="month"
+              class="month-cell cell"
+              :class="{prev: month.prev, next: month.next, past: month.past}"
+              @click="toggleSelectMonth($event, month)"
+              :month-id="`${month.fullYear}-${month.monthNumber}`"
+              :year-id="month.fullYear"
+              :selected="isSelected(null, month, null)"
+            >
+              <div
+                class="cell-content"
+                :selected="selectedDate.monthNumber == month.monthNumber && selectedDate.fullYear == month.fullYear"
+                :style="{
+                  backgroundColor: `${
+                    isSelected(null, month, null) ||
+                    (selectedDate.monthNumber == month.monthNumber && selectedDate.fullYear == month.fullYear)
+                      ? accentColor
+                      : ''
+                  }`,
+                }"
+                @click.stop="scrollDayIntoView()"
+              >
+                <span class="cell-content month-name">{{ MONTHS[month.monthNumber] | abr }} </span>
+                <div class="hover" v-if="month.next">{{ month.fullYear }}</div>
+                <div class="hover" v-if="month.prev">{{ month.fullYear }}</div>
+                <span v-if="!years"> {{ month.fullYear % 1000 }}</span>
+              </div>
             </div>
           </div>
+          <div v-else>
+            <div
+              v-for="month in calendar.months"
+              :key="`${month.fullYear}-${month.monthNumber}`"
+              v-if="isSelected(null, month, null)"
+               class="month-cell cell"
+              :class="{prev: month.prev, next: month.next, past: month.past}"
+              @click="toggleSelectMonth($event, month)"
+              :month-id="`${month.fullYear}-${month.monthNumber}`"
+              :year-id="month.fullYear"
+              
+            >
+              <div
+                 class="cell-content"
+                :selected="selectedDate.monthNumber == month.monthNumber && selectedDate.fullYear == month.fullYear"
+                @click.stop="scrollDayIntoView()"
+              >
+                <span class="cell-content month-name">{{ MONTHS[month.monthNumber] | abr }} {{ month.fullYear }} </span>
+                <!-- <span v-if="!years" class="cell-content year" > {{ month.fullYear }}</span> -->
+              </div>
+            </div>
+          </div>
+          
         </div>
       </div>
-      <div class="arrow left" :class="years ? 'middle' : 'top'" @click="goTo($event, monthly, -1)" :style="{visibility: monthly.realOffset >= 0 ? 'hidden' : 'visible'}">
-      </div>
-      <div class="arrow right" :class="years ? 'middle' : 'top'" @click="goTo($event, monthly, 1)" :style="{visibility: monthly.realOffset <= monthly.maxOffset ? 'hidden' : 'visible'}">
-      </div>
+      <div
+        class="arrow left"
+        :class="years ? 'middle' : 'top'"
+        @click="goTo($event, monthly, -1)"
+        :style="{visibility: monthly.realOffset >= 0 ? 'hidden' : 'visible'}"
+      ></div>
+      <div
+        class="arrow right"
+        :class="years ? 'middle' : 'top'"
+        @click="goTo($event, monthly, 1)"
+        :style="{visibility: monthly.realOffset <= monthly.maxOffset ? 'hidden' : 'visible'}"
+      ></div>
       <div class="wrapper">
-        <div ref="daily" state="daily" class="days ui-draggable" :style="daily.phase === 'dragging' ? {pointerEvents: 'none', transition: 'none', cursor:'-webkit-grab'} : {} " style="left: 0px;" @mousedown="initDrag($event, daily)" @touchstart="initDrag($event, daily)">
-          <div v-for="day in calendar.days" :key="day | ymd" :date="day | ymd" :closed="day.disabled" class="cal-cell cell" :class="{first: day.day == 1, next: day.next, prev: day.prev, today: day.today, }" :month-id="day.monthNumber" :year-id="day.fullYear" :day-id="day.day" @click="toggleSelect($event, day)" :selected="isSelected(day, null, null)" :style="{backgroundColor: `${isSelected(day, null, null) ? accentColor : ''}` }">
-            <div class="hover" v-if="day.next"> {{day.fullYear}}</div>
-            <div class="hover" v-if="day.prev"> {{day.fullYear}}</div>
-            <div class="cell-content">
-              <div class="day-number">
-                {{day.day}}
-              </div>
+        <div
+          ref="daily"
+          state="daily"
+          class="days ui-draggable"
+          :style="daily.phase === 'dragging' ? {pointerEvents: 'none', transition: 'none', cursor: 'pointer'} : {}"
+          style="left: 0px"
+          @mousedown="initDrag($event, daily)"
+          @touchstart="initDrag($event, daily)"
+        >
+          <div
+            v-for="day in calendar.days"
+            :key="day | ymd"
+            :date="day | ymd"
+            :closed="day.disabled"
+            class="cal-cell cell"
+            :class="{first: day.day == 1, next: day.next, prev: day.prev, today: day.today, activeDay:isSelected(day, null, null) }"
+            :month-id="day.monthNumber"
+            :year-id="day.fullYear"
+            :day-id="day.day"
+            @click="toggleSelect($event, day)"
+            :selected="isSelected(day, null, null)"
+            
+          >
+            <div class="hover" v-if="day.next">{{ day.fullYear }}</div>
+            <div class="hover" v-if="day.prev">{{ day.fullYear }}</div>
+            <div class="cell-content dayCantainer">
               <div class="day">
-                {{DAYS[day.dayOfTheWeek] | abr}}
+                {{ DAYS[day.dayOfTheWeek] | stringSlice }}
+              </div>
+              <div class="day-number">
+                {{ String(day.day).padStart(2, "0") }}
+              </div>
+              <div v-if="isEventAvailable" >
+                <div class="day-event-dots-available"></div>
+                <div class="day-event-dots-available"></div>
+                <div class="day-event-dots-available"></div>
+              </div>
+              <div v-else >
+                <div class="day-event-dots-notAvailable"></div>
+                <div class="day-event-dots-notAvailable"></div>
+                <div class="day-event-dots-notAvailable"></div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="arrow bottom left" @click="goTo($event, daily, -1)" :style="{visibility: daily.realOffset >= 0 ? 'hidden' : 'visible'}">
+      <div
+        class="arrow bottom left"
+        @click="goTo($event, daily, -1)"
+      >
+        <div class="arrowBg" :style="{opacity: daily.realOffset >= 0 ? '0.5' : '1'}" >
+          <font-awesome-icon icon="angle-left" />
+        </div>
       </div>
-      <div class="arrow bottom right" @click="goTo($event, daily, 1)" :style="{visibility: daily.realOffset <= daily.maxOffset ? 'hidden' : 'visible'}">
+      <div
+        class="arrow bottom right"
+        @click="goTo($event, daily, 1)"
+        
+      >
+        <div class="arrowBg" :style="{opacity: daily.realOffset <= daily.maxOffset ? '0.5' : '1'}" >
+          <font-awesome-icon icon="angle-right" />
+        </div>
       </div>
     </div>
   </section>
 </template>
 <script>
-import {abr, ymd} from '@/utils/filters'
+import {abr, ymd, stringSlice} from '@/utils/filters'
 import {buildCalendar, buildEntireCalendar} from '@/utils/buildCalendar'
 import props from '@/utils/props'
 import languages from '@/utils/CONSTANTS'
 export default {
   name: 'VueCal',
-  filters: {abr, ymd},
+  filters: {abr, ymd, stringSlice},
   props: props,
   computed: {
     currentMonth() {
@@ -193,10 +332,10 @@ export default {
         this.$refs.yearly.querySelector(`[year-id="${e.target.getAttribute('year-id')}"]`).click()
         return
       }
-      if (e.target.getAttribute('selected')) {
-        this.selectedDate = {}
-        return this.$emit('dateCleared')
-      }
+      // if (e.target.getAttribute('selected')) {
+      //   this.selectedDate = day
+      //   return this.$emit('dateCleared')
+      // }
       this.dateSelected(day)
     },
     dateSelected(date) {
@@ -370,13 +509,9 @@ export default {
   font-size: $responsive;
 }
 
-@font-face {
-  font-family: 'Oswald';
-  font-style: normal;
-  font-weight: 400;
-  src: url('public/font.woff2') format('woff2');
-}
+
 :root {
+  font-family: sans-serif;
   @include responsive-font(1.75vw, 13px, 16px, 14px);
 }
 
@@ -407,24 +542,61 @@ export default {
       pointer-events: none;
     }
   }
+  .cal-cell{
+    cursor: pointer;
+  }
   .cal-cell[selected='selected'],
   .month-cell[selected='selected'] {
-    border-radius: 0.5em;
-    transform: scale(1.1);
-    transition: transform 0.3s ease;
+    // border-radius: 0.5em;
+    // transform: scale(1.1);
+    // transition: transform 0.3s ease;
     padding: 1.25em;
-    .cell-content {
-      div {
-        transform: scale(1.5);
-        color: white;
-      }
-      .day-number {
-        margin-bottom: 0.25rem;
-      }
-    }
+    cursor: pointer;
+    // .cell-content {
+    //   div {
+    //     transform: scale(1.5);
+    //     color: white;
+    //   }
+    //   .day-number {
+    //     margin-bottom: 0.25rem;
+    //   }
+      
+    // }
   }
+  .dayCantainer{
+          height: 82px;
+    background: #fff;
+    border: 2px solid #ECEEFF;
+    border-radius: 8px;
+    margin: 0 1px;
+    text-align: center;
+    width: 53px;
+    display: block;
+    position: relative;
+    overflow: hidden;
+    padding: 14px 0;
+    box-sizing: border-box;
+    .day-event-dots {
+            position: relative;
+        }
+        .day-event-dots-available::before {
+            content: " ";
+            position: absolute;
+            background: #00ff22;
+            width: 4px;
+            height: 4px;
+            border-radius: 100%;
+        }
+        .day-event-dots-notAvailable::before {
+            content: " ";
+            position: absolute;
+            background: #C4C4C4;
+            width: 4px;
+            height: 4px;
+            border-radius: 100%;
+        }
+    }
   .arrow {
-    font-family: 'Oswald';
     width: 2rem;
     justify-content: center;
     position: absolute;
@@ -435,15 +607,15 @@ export default {
     background-color: white;
     color: darkgrey;
     &:hover {
-      background-color: #f8f8ff;
-      box-shadow: inset 0px 0px 5px 1px rgba(0, 0, 0, 0.1), inset 0px 0px 5px 1px rgba(0, 0, 0, 0.1);
+      // background-color: #f8f8ff;
+      // box-shadow: inset 0px 0px 5px 1px rgba(0, 0, 0, 0.1), inset 0px 0px 5px 1px rgba(0, 0, 0, 0.1);
       cursor: pointer;
       color: black;
     }
     &.bottom {
-      height: 5rem;
-      bottom: 1.1rem;
-      font-size: 3rem;
+          height: 4.5em;
+          bottom: -0.8em;
+          font-size: 2rem;
     }
     &.middle {
       top: 3.25rem;
@@ -457,6 +629,21 @@ export default {
     }
     &.left {
       left: 0;
+      color:#2477C2 !important;
+      .arrowBg{
+            width: 8px;
+            height: 26px;
+            line-height: 26px;
+            border-radius: 5px;
+            color: #2477C2 !important;
+            background: #2477C21a !important;
+            font-weight: 700;
+            font-size: 16px;
+            padding: 0px 10px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+          }
       &.middle:before {
         content: '<';
         height: 2.5rem;
@@ -466,12 +653,27 @@ export default {
         height: 2.5rem;
       }
       &.bottom:before {
-        content: '<';
+        // content: '<';
         height: 4rem;
       }
     }
     &.right {
+      color:#2477C2 !important;
       right: 0;
+      .arrowBg{
+            width: 8px;
+            height: 26px;
+            line-height: 26px;
+            border-radius: 5px;
+            color: #2477C2 !important;
+            background: #2477C21a !important;
+            font-weight: 700;
+            font-size: 16px;
+            padding: 0px 10px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+          }
       &.middle:before {
         content: '>';
         height: 2.5rem;
@@ -481,7 +683,7 @@ export default {
         height: 2.5rem;
       }
       &:before {
-        content: '>';
+        // content: '>';
         height: 4rem;
       }
     }
@@ -501,14 +703,14 @@ export default {
     .cell {
       float: left;
       width: 4rem;
-      padding: 1.5rem 1.25rem;
+      padding: 10px;
       margin: 0;
-      border-right: 1px solid rgba(0, 0, 0, 0.03);
+      // border-right: 1px solid rgba(0, 0, 0, 0.03);
       text-align: center;
       position: relative;
       color: #888;
       &:first-child {
-        margin-left: 0.4em;
+        margin-left: 1.5em;
       }
       &:last-child {
         margin-right: 0.4em;
@@ -549,16 +751,35 @@ export default {
         }
       }
       &.today {
+        .dayCantainer{
+          border: 2px solid #2477C2 !important;
+        }
+        .day {
+          color: #2477AF;
+        }
         .day-number {
-          color: red;
-          text-decoration: underline;
+          color: #2477AF;
+          text-decoration:  none;
+        }
+      }
+      &.activeDay{
+        .dayCantainer{
+          border: 2px solid #2477C2 !important;
+        }
+        .day {
+          color: #2477AF;
+        }
+        .day-number {
+          color: #2477AF;
+          text-decoration:  none;
         }
       }
       .day-number {
         display: block;
+        line-height: 29px;
         clear: both;
-        font-weight: bold;
-        font-size: 1.2em;
+        color: #B3B5C3;
+        font-weight: 400;
         z-index: 1;
         position: relative;
       }
@@ -567,20 +788,22 @@ export default {
         clear: both;
         text-transform: uppercase;
         width: 100%;
-        font-weight: 100;
+        font-weight: 500;
         font-size: 12px;
+        color: #696D87;
+        line-height: 18px;
         margin-top: 0px;
         z-index: 1;
         position: relative;
       }
       &.first {
-        background-color: rgba(0, 0, 0, 0.02);
-        color: #666;
+        // background-color: rgba(0, 0, 0, 0.02);
+        // color: #666;
         .day {
-          font-weight: bold;
+          // font-weight: bold;
         }
         .day-number {
-          font-size: 1.2em;
+          // font-size: 1.2em;
         }
       }
     }
@@ -601,29 +824,29 @@ export default {
     flex: 1;
     .cell {
       float: left;
-      width: 8rem;
-      padding: 0.6rem;
+      width: 9em;
+      padding: 18px 0px;
       text-align: center;
       position: relative;
       color: #888;
-      border-right: 1px solid rgba(0, 0, 0, 0.03);
+      // border-right: 1px solid rgba(0, 0, 0, 0.03);
       position: relative;
       flex: 1;
-      &:not([selected='selected']) {
-        .cell-content[selected='selected'] {
-          opacity: 1;
-          color: white;
-          width: fit-content;
-          margin-left: auto;
-          margin-right: auto;
-          padding: 0.4rem;
-          margin-top: -0.4rem;
-          border-radius: 0.5rem;
-          pointer-events: auto;
-          cursor: pointer;
-          z-index: 3;
-        }
-      }
+      // &:not([selected='selected']) {
+      //   .cell-content[selected='selected'] {
+      //     opacity: 1;
+      //     color: white;
+      //     width: fit-content;
+      //     margin-left: auto;
+      //     margin-right: auto;
+      //     padding: 0.4rem;
+      //     margin-top: -0.4rem;
+      //     border-radius: 0.5rem;
+      //     pointer-events: auto;
+      //     cursor: pointer;
+      //     z-index: 3;
+      //   }
+      // }
       &.past {
         background-color: rgba(222, 222, 222, 0.6);
         color: lightgrey;
@@ -681,15 +904,13 @@ export default {
         flex: 0.5;
       }
       .cell-content {
-        font-weight: 200;
-        font-size: 1em;
-        .month-name {
-          opacity: 1;
+        .month-name,.year {
+          font-size: 16px;
           font-weight: bold;
-          font-size: 0.9rem;
-          z-index: 1;
-          position: relative;
-          text-transform: uppercase;
+          color: #2477C2;
+          line-height: 22px;
+          margin-bottom: 16px;
+          padding-left: 20px;
         }
       }
     }

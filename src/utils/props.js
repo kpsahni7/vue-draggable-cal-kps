@@ -1,3 +1,4 @@
+var cDate = new Date()
 export default {
   lang: {
     type: String,
@@ -7,6 +8,10 @@ export default {
   days: {
     type: Number,
     default: 365,
+  },
+  allMonthShow: {
+    type: Boolean,
+    default: false,
   },
   months: {
     type: Number,
@@ -30,7 +35,7 @@ export default {
   },
   selected: {
     type: Object,
-    default: () => ({}),
+    default: () => ({monthNumber: cDate.getMonth(), fullYear: cDate.getFullYear()}),
   },
   disabledWeekDays: {
     type: Object,
@@ -48,5 +53,9 @@ export default {
   accentColor: {
     type: String,
     default: '#00008b',
+  },
+  isEventAvailable: {
+    type: Boolean,
+    default: false,
   },
 }
