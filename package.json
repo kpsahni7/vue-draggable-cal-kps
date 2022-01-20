@@ -1,5 +1,5 @@
 {
-  "name": "vue-draggable-cal-kps",
+  "name": "@kpsahani/vue-draggable-cal-kps",
   "version": "2.6.0",
   "main": "dist/draggableCal.common.js",
   "module": "dist/draggableCal.esm.js",
@@ -67,5 +67,17 @@
     "node": ">=8"
   },
   "homepage": "https://github.com/kpsahni7/vue-draggable-cal-kps.git#readme",
-  "license": "MIT"
+  "license": "MIT",
+  "description": "A datepicker Vue component. Compatible with Vue 2.x",
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://kpsahani7@github.com/kpsahni7/vue-draggable-cal-kps.git"
+  },
+  "author": "kpsahani",
+  "bugs": {
+    "url": "https://github.com/kpsahni7/vue-draggable-cal-kps/issues"
+  }
 }
