@@ -1,5 +1,5 @@
 {
-  "name": "@kpsahani/vue-draggable-cal-kps",
+  "name": "@kpsahnai/vue-draggable-cal-kps",
   "version": "2.6.0",
   "main": "dist/draggableCal.common.js",
   "module": "dist/draggableCal.esm.js",
@@ -15,12 +15,12 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.36",
-    "@fortawesome/free-solid-svg-icons": "^5.15.4",
-    "@fortawesome/vue-fontawesome": "^2.0.6",
     "vue": "^2.5.17"
   },
   "devDependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.36",
+    "@fortawesome/free-solid-svg-icons": "^5.15.4",
+    "@fortawesome/vue-fontawesome": "^2.0.6",
     "@vue/cli-plugin-babel": "^3.0.5",
     "@vue/cli-plugin-eslint": "^3.0.5",
     "@vue/cli-plugin-unit-jest": "^3.0.5",

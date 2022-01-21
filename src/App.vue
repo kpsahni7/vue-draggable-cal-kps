@@ -158,16 +158,16 @@
               <div class="day-number">
                 {{ String(day.day).padStart(2, "0") }}
               </div>
-              <div v-if="isEventAvailable" >
+              <div v-if="chekEvents(day)" >
                 <div class="day-event-dots-available"></div>
                 <div class="day-event-dots-available"></div>
                 <div class="day-event-dots-available"></div>
               </div>
-              <div v-else >
+              <!-- <div v-else >
                 <div class="day-event-dots-notAvailable"></div>
                 <div class="day-event-dots-notAvailable"></div>
                 <div class="day-event-dots-notAvailable"></div>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -267,6 +267,19 @@ export default {
     }
   },
   methods: {
+    chekEvents(day) {
+      var attr = this.attributes.filter(data => {
+        if (data.key != 'currentDate') {
+          var d1 = new Date(data.dates)
+          d1.setHours(0, 0, 0, 0)
+          var d2 = new Date(`${day.fullYear}-${day.monthNumber + 1}-${day.day}`)
+          return +d1 === +d2
+        } else {
+          return false
+        }
+      })
+      return attr.length > 0
+    },
     goTo(e, state, coef) {
       if (state.realOffset > 0 || state.realOffset <= state.maxOffset) return false
       let elem = this.$refs[`${state.id}`]
@@ -340,7 +353,7 @@ export default {
     },
     dateSelected(date) {
       this.selectedDate = date
-      const formattedDate = new Date(Date.UTC(date.fullYear, date.monthNumber, date.day))
+      const formattedDate = new Date(Date.UTC(date.fullYear, date.monthNumber, date.day)).toISOString().slice(0, 10)
       this.$emit('dateSelected', formattedDate)
     },
     handleResize() {
@@ -613,9 +626,9 @@ export default {
       color: black;
     }
     &.bottom {
-          height: 4.5em;
-          bottom: -0.8em;
-          font-size: 2rem;
+        height: 2.5em;
+        bottom: 0.2em;
+        font-size: 2rem;
     }
     &.middle {
       top: 3.25rem;
@@ -704,7 +717,7 @@ export default {
       float: left;
       width: 4rem;
       padding: 10px;
-      margin: 0;
+      margin: 0px 10px;
       // border-right: 1px solid rgba(0, 0, 0, 0.03);
       text-align: center;
       position: relative;
@@ -825,7 +838,7 @@ export default {
     .cell {
       float: left;
       width: 9em;
-      padding: 18px 0px;
+      padding: 16px 0px;
       text-align: center;
       position: relative;
       color: #888;

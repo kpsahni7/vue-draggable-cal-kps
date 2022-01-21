@@ -58,4 +58,8 @@ export default {
     type: Boolean,
     default: false,
   },
+  attributes: {
+    type: Array,
+    default: () => [],
+  },
 }
