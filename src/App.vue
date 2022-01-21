@@ -177,7 +177,8 @@
         @click="goTo($event, daily, -1)"
       >
         <div class="arrowBg" :style="{opacity: daily.realOffset >= 0 ? '0.5' : '1'}" >
-          <font-awesome-icon icon="angle-left" />
+          <!-- <font-awesome-icon icon="angle-left" /> -->
+          <i class="fa fa-angle-left"></i>
         </div>
       </div>
       <div
@@ -186,7 +187,8 @@
         
       >
         <div class="arrowBg" :style="{opacity: daily.realOffset <= daily.maxOffset ? '0.5' : '1'}" >
-          <font-awesome-icon icon="angle-right" />
+          <!-- <font-awesome-icon icon="angle-right" /> -->
+          <i class="fa fa-angle-right"></i>
         </div>
       </div>
     </div>
@@ -644,7 +646,7 @@ export default {
       left: 0;
       color:#2477C2 !important;
       .arrowBg{
-            width: 8px;
+            width: 26px;
             height: 26px;
             line-height: 26px;
             border-radius: 5px;
@@ -674,7 +676,7 @@ export default {
       color:#2477C2 !important;
       right: 0;
       .arrowBg{
-            width: 8px;
+            width: 26px;
             height: 26px;
             line-height: 26px;
             border-radius: 5px;
