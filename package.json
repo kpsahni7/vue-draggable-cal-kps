@@ -1,6 +1,6 @@
 {
   "name": "@kpsahnai/vue-draggable-cal-kps",
-  "version": "2.6.2",
+  "version": "2.6.3",
   "main": "dist/draggableCal.common.js",
   "module": "dist/draggableCal.esm.js",
   "unpkg": "dist/draggableCal.umd.js",

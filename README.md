@@ -30,17 +30,17 @@ I am planning to add a few more customizations props in the near future, but I d
 ## Install
 
 ```bash
-npm i vue-draggable-cal --save
+npm i @kpsahnai/vue-draggable-cal-kps --save
 ```
 
 or
 
 ```bash
-yarn add vue-draggable-cal
+yarn add @kpsahnai/vue-draggable-cal-kps
 ```
 
 ```javascript
-import DraggableCal from 'vue-draggable-cal';
+import DraggableCal from '@kpsahnai/vue-draggable-cal-kps';
 
 export default {
   // ...
@@ -58,7 +58,7 @@ Or use directly from a CDN
   <DraggableCal></DraggableCal>
 </div>
 <script src="https://unpkg.com/vue"></script>
-<script src="https://unpkg.com/vue-draggable-cal"></script>
+<script src="https://unpkg.com/@kpsahnai/vue-draggable-cal-kps"></script>
 <script>
 new Vue({
   el: '#app',
@@ -99,7 +99,10 @@ Emits events
 | pastIsDisabled  | Boolean | true    | Allows the selection of alreay past days and predend the days of `prepended` months                                   |
 | fullMonths      | Boolean | false   | Weither or not to always use complete months (i.e. `days=1` if set to `true` the whole month is going to be appended) |
 | accentColor     | String  | #00008b | Set the accent color (`HEX` or `CSS color names`)                                                                     |
-| lang            | String  | EN      | Language (see available in [Transations](#Translation))                                                               |
+| lang            | String  | EN      | Language (see available in [Transations](#Translation))       
+
+
+attributes | array | []                                                        |
 
 ## Events
 
@@ -141,3 +144,9 @@ MIT
 ## Thanks
 
 Credits to [@webAngelo](https://github.com/webangelo) for his range-calendar from which this is highly inspired.
+
+
+
+Note: this is customizable libarary so you have need to use real libraries as per your use below
+
+link : https://www.npmjs.com/package/vue-draggable-cal
